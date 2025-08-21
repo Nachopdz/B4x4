@@ -1,0 +1,221 @@
+openapi: 3.0.3
+info:
+  title: B4X4 API
+  version: 0.1.0
+servers:
+  - url: https://api.b4x4.app
+  - url: http://localhost:3000
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200': { description: OK }
+  /auth/otp/request:
+    post:
+      summary: Solicita OTP por teléfono
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { phone: { type: string } }, required: [phone] }
+      responses:
+        '200': { description: Sent }
+  /auth/otp/verify:
+    post:
+      summary: Verifica OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { phone: { type: string }, code: { type: string } }, required: [phone, code] }
+      responses:
+        '200': { description: Session }
+  /me:
+    get:
+      summary: Perfil actual
+      responses:
+        '200': { description: User }
+    put:
+      summary: Actualiza perfil
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object, properties: { handle: {type: string}, name: {type: string}, avatarUrl: {type: string} } }
+      responses:
+        '200': { description: User }
+  /feed:
+    get:
+      summary: Lista posts (paginado)
+      parameters:
+        - in: query; name: cursor; schema: { type: string, nullable: true }
+        - in: query; name: limit; schema: { type: integer, default: 12 }
+      responses:
+        '200': { description: Page<PostDTO> }
+  /posts/{id}:
+    get:
+      summary: Detalle post
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      responses:
+        '200': { description: PostDTO }
+  /posts/{id}/comments:
+    post:
+      summary: Añade comentario
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { userId: {type: string}, text:{type: string} }, required: [userId,text] }
+      responses:
+        '200': { description: CommentDTO }
+  /reels:
+    get:
+      summary: Lista reels (paginado)
+      parameters:
+        - in: query; name: cursor; schema: { type: string, nullable: true }
+        - in: query; name: limit; schema: { type: integer, default: 10 }
+      responses:
+        '200': { description: Page<ReelDTO> }
+  /reels/{id}/like:
+    post:
+      summary: Toggle like reel
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { liked: {type: boolean} }, required: [liked] }
+      responses:
+        '200': { description: Ok }
+  /challenges:
+    get:
+      summary: Lista challenges (paginado)
+      parameters:
+        - in: query; name: cursor; schema: { type: string, nullable: true }
+        - in: query; name: limit; schema: { type: integer, default: 10 }
+      responses:
+        '200': { description: Page<ChallengeDTO> }
+  /challenges/{id}/vote:
+    post:
+      summary: Votar challenge
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { kind: {type: string, enum: [up,down]} }, required: [kind] }
+      responses:
+        '200': { description: Ok }
+  /challenges/{id}/report:
+    post:
+      summary: Reportar challenge
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { reason: {type: string} }, required: [reason] }
+      responses:
+        '200': { description: Ok }
+  /matches:
+    get:
+      summary: Lista partidos
+      parameters:
+        - in: query; name: cursor; schema: { type: string, nullable: true }
+        - in: query; name: limit; schema: { type: integer, default: 10 }
+      responses:
+        '200': { description: Page<MatchDTO> }
+    post:
+      summary: Crear partido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { date:{type:string}, location:{type:string}, teams:{type:array,items:{type:string}} }, required: [date,location] }
+      responses:
+        '201': { description: MatchDTO }
+  /matches/{id}:
+    get:
+      summary: Detalle partido
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      responses:
+        '200': { description: MatchDTO }
+    put:
+      summary: Actualiza partido
+      parameters: [ { in: path, name: id, required: true, schema: {type: string} } ]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { description: MatchDTO }
+  /wallet/{userId}:
+    get:
+      summary: Wallet del usuario
+      parameters: [ { in: path, name: userId, required: true, schema: {type: string} } ]
+      responses:
+        '200': { description: WalletDTO }
+  /wallet/{userId}/transactions:
+    get:
+      summary: Historial
+      parameters:
+        - in: path; name: userId; required: true; schema: {type: string}
+        - in: query; name: cursor; schema: { type: string, nullable: true }
+        - in: query; name: limit; schema: { type: integer, default: 20 }
+      responses:
+        '200': { description: Page<TransactionDTO> }
+  /wallet/{userId}/earn:
+    post:
+      summary: Ganar monedas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { amount:{type:number}, reason:{type:string} }, required: [amount,reason] }
+      responses:
+        '200': { description: WalletDTO }
+  /wallet/{userId}/spend:
+    post:
+      summary: Gastar monedas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { amount:{type:number}, reason:{type:string} }, required: [amount,reason] }
+      responses:
+        '200': { description: WalletDTO }
+  /safety/{userId}:
+    get:
+      summary: Lee settings parentales
+      responses:
+        '200': { description: SafetySettingsDTO }
+    put:
+      summary: Actualiza settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { safeMode:{type:boolean}, maxDailyTime:{type:integer,nullable:true} } }
+      responses:
+        '200': { description: SafetySettingsDTO }
+  /moderation/report:
+    post:
+      summary: Crea reporte genérico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, properties: { kind:{type:string}, id:{type:string}, reason:{type:string} }, required:[kind,id,reason] }
+      responses:
+        '200': { description: ModerationItemDTO }
+  /moderation/status:
+    get:
+      summary: Estado de un ítem
+      parameters:
+        - in: query; name: kind; schema: {type:string}
+        - in: query; name: id; schema: {type:string}
+      responses:
+        '200': { description: Status }

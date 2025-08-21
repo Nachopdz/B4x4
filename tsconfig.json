@@ -1,0 +1,14 @@
+{
+  "//": "B4X4 v3.2 START",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "strict": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] },
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "//end": "B4X4 v3.2 END"
+}

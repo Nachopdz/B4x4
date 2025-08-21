@@ -1,0 +1,258 @@
+openapi: 3.0.3
+info:
+  title: B4X4 API
+  version: 0.1.0
+servers:
+  - url: https://api.b4x4.local
+tags:
+  - name: Auth
+  - name: Users
+  - name: Teams
+  - name: Leagues
+  - name: Matches
+  - name: Posts
+  - name: Wallet
+  - name: Bets
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '400': { description: Bad Request }
+        '401': { description: Unauthorized }
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone: { type: string }
+                password: { type: string }
+                username: { type: string }
+      responses:
+        '201': { description: Created }
+        '400': { description: Bad Request }
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh tokens
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokens'
+        '401': { description: Unauthorized }
+
+  /me:
+    get:
+      tags: [Users]
+      summary: Get current user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401': { description: Unauthorized }
+    put:
+      tags: [Users]
+      summary: Update current user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200': { description: OK }
+        '400': { description: Bad Request }
+        '401': { description: Unauthorized }
+
+  /users/{id}:
+    get:
+      tags: [Users]
+      summary: Get user by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404': { description: Not Found }
+
+  /teams:
+    get:
+      tags: [Teams]
+      summary: List teams
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Teams]
+      summary: Create team
+      responses:
+        '201': { description: Created }
+
+  /leagues:
+    get:
+      tags: [Leagues]
+      summary: List leagues
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Leagues]
+      summary: Create league
+      responses:
+        '201': { description: Created }
+
+  /matches:
+    get:
+      tags: [Matches]
+      summary: List matches
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Matches]
+      summary: Create match
+      responses:
+        '201': { description: Created }
+
+  /posts:
+    get:
+      tags: [Posts]
+      summary: List posts
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Posts]
+      summary: Create post
+      responses:
+        '201': { description: Created }
+
+  /posts/{id}/like:
+    post:
+      tags: [Posts]
+      summary: Like a post
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+
+  /posts/{id}/comment:
+    post:
+      tags: [Posts]
+      summary: Comment on a post
+      responses:
+        '201': { description: Created }
+        '404': { description: Not Found }
+
+  /wallet/transactions:
+    get:
+      tags: [Wallet]
+      summary: List wallet transactions
+      responses:
+        '200': { description: OK }
+    post:
+      tags: [Wallet]
+      summary: Create wallet transaction
+      responses:
+        '201': { description: Created }
+
+  /bets:
+    post:
+      tags: [Bets]
+      summary: Place a bet
+      responses:
+        '201': { description: Created }
+        '400': { description: Bad Request }
+        '401': { description: Unauthorized }
+
+components:
+  schemas:
+    AuthTokens:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        username: { type: string }
+        displayName: { type: string }
+    Team:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+    League:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+    Match:
+      type: object
+      properties:
+        id: { type: string }
+        leagueId: { type: string }
+        homeTeamId: { type: string }
+        awayTeamId: { type: string }
+    Post:
+      type: object
+      properties:
+        id: { type: string }
+        authorId: { type: string }
+        content: { type: string }
+    Comment:
+      type: object
+      properties:
+        id: { type: string }
+        postId: { type: string }
+        authorId: { type: string }
+        content: { type: string }
+    WalletTx:
+      type: object
+      properties:
+        id: { type: string }
+        walletId: { type: string }
+        amount: { type: number }
+        direction: { type: string, enum: ["in", "out"] }
+    Bet:
+      type: object
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        matchId: { type: string }
+        amount: { type: number }
+
