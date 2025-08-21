@@ -1,0 +1,13 @@
+# Reglas de edición — B4X4 + Cursor
+- No añadir dependencias sin confirmación explícita.
+- Flujo obligatorio en cada tarea: Plan → Diffs por archivo → Commit → QA checklist.
+- Mantener TypeScript estricto; evitar `any` salvo justificado (documenta el porqué).
+- Usar marcas en código: `// B4X4 v1.1 START` … `// B4X4 v1.1 END`.  
+  *No insertar marcas en JSON, .env ni binarios.*
+- Cambios atómicos y no intrusivos. Nada de refactors masivos no solicitados.
+- Mantener el tema visual B4X4 (neón verde/púrpura sobre fondo oscuro).
+- Proponer commits con convención *conventional commits* (feat, fix, chore, docs, refactor).
+- Si falta contexto, preguntar antes de tocar más archivos.
+- No exponer secretos. Nunca commitear `.env`, claves o tokens.
+- Para scripts/CI: sugerir pasos, no modificarlos sin permiso.
+- Siempre incluir QA: comandos de lint/typecheck/build y pruebas manuales.
