@@ -1,37 +1,63 @@
-// B4X4 v4.6 START
-import React, { useState } from 'react';
-import { View } from 'react-native';
-import Input from '@/ds/components/Input';
-import Button from '@/ds/components/Button';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity } from 'react-native';
+import Text from '@/ds/components/Text'; 
+import { useThemeB4 } from '@/ds/theme';
 import { useAuthStore } from '@/store/useAuthStore';
-import { AuthService } from '@/services/AuthService';
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUser, updateUser } from '@/features/users/userService';
 
-export default function ProfileSetupScreen() {
-  const sessionLegacy = useAuthStore((s) => s.session); // legacy
-  const setSessionFull = useAuthStore((s) => s.setSessionFull);
-  const [handle, setHandle] = useState(sessionLegacy?.userId ? `user${sessionLegacy.userId}` : '');
-  const [name, setName] = useState('');
-  const nav = useNavigation<any>();
+const ROLES = ['player','creator','viewer','organizer','mod','admin'] as const;
+type Role = typeof ROLES[number];
 
-  const onSave = async () => {
-    // Hydrate full session from storage to update profile (mock flow)
-    const raw = await AsyncStorage.getItem('b4x4_session');
-    if (raw) {
-      const sess = JSON.parse(raw);
-      const updated = await AuthService.updateProfile(sess, { handle, name });
-      await setSessionFull(updated);
-    }
-    nav.reset({ index: 0, routes: [{ name: 'Main' }] });
-  };
+export default function ProfileSetupScreen({ navigation }:any){
+  const s = useAuthStore(); 
+  const uid = s.session?.uid!;
+  const [displayName,setDisplayName]=useState(''); 
+  const [city,setCity]=useState('');
+  const [role,setRole]=useState<Role>('player'); 
+  const [saving,setSaving]=useState(false);
+  const theme = useThemeB4();
+
+  useEffect(()=>{ 
+    (async()=>{ 
+      const me=await getUser(uid); 
+      if(me){ 
+        setDisplayName(me.displayName??''); 
+        setCity(me.city??''); 
+        setRole((me.role??'player') as Role);
+      } 
+    })(); 
+  },[uid]);
+
+  async function onSave(){
+    setSaving(true); 
+    await updateUser(uid,{ displayName, city, role }); 
+    setSaving(false);
+    navigation.replace('Main'); // entra a la app
+  }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000', padding: 16, gap: 12 }}>
-      <Input label="Handle" value={handle} onChangeText={setHandle} />
-      <Input label="Nombre" value={name} onChangeText={setName} />
-      <Button title="Empezar" onPress={onSave} />
+    <View style={{flex:1, backgroundColor:theme.background, padding:24}}>
+      <Text style={{fontSize:22, marginBottom:12}}>Tu perfil</Text>
+      <Text style={{marginTop:8}}>Nombre visible</Text>
+      <TextInput value={displayName} onChangeText={setDisplayName} placeholder="Tu nombre"
+        placeholderTextColor={theme.muted} style={{borderWidth:1,borderColor:'#333',borderRadius:12,padding:12,color:'#fff'}}/>
+      <Text style={{marginTop:12}}>Ciudad</Text>
+      <TextInput value={city} onChangeText={setCity} placeholder="Ciudad"
+        placeholderTextColor={theme.muted} style={{borderWidth:1,borderColor:'#333',borderRadius:12,padding:12,color:'#fff'}}/>
+      <Text style={{marginTop:12, marginBottom:6}}>Rol</Text>
+      <View style={{flexDirection:'row', flexWrap:'wrap', gap:8}}>
+        {ROLES.map(r=>(
+          <TouchableOpacity key={r} onPress={()=>setRole(r)}
+            style={{paddingVertical:8,paddingHorizontal:12,borderRadius:12,
+              backgroundColor: role===r?theme.accent:'#111'}}>
+            <Text style={{color: role===r? '#000':'#fff'}}>{r}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      <TouchableOpacity onPress={onSave} disabled={saving || !displayName}
+        style={{marginTop:20, backgroundColor:theme.accent, padding:14, borderRadius:12, alignItems:'center'}}>
+        <Text style={{color:'#000', fontWeight:'800'}}>{saving?'Guardando...':'Entrar'}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-// B4X4 v4.6 END

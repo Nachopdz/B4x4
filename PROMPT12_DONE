@@ -1,0 +1,34 @@
+PROMPT 12 COMPLETADO
+
+Sistema de Wallet y Apuestas Virtuales implementado con:
+
+✅ Firebase Functions (Node 20 + TypeScript)
+  - functions/package.json
+  - functions/tsconfig.json  
+  - functions/src/index.ts
+
+✅ Funcionalidades de Functions:
+  - Wallet inicial automático (1000 coins) al crear usuario
+  - Liquidación automática de apuestas cuando termina partido
+  - Cálculo de ganancias basado en odds y stake
+
+✅ Repositorio del wallet (walletRepo.ts):
+  - getWallet: obtener balance del usuario
+  - placeBet: realizar apuesta (valida saldo, descuenta stake)
+  - getBets: obtener historial de apuestas del usuario
+
+✅ Pantallas del wallet:
+  - WalletScreen: muestra balance del usuario
+  - BetSlipScreen: interfaz para hacer apuestas (pick, stake, odds)
+
+✅ Reglas de Firestore actualizadas:
+  - wallets/{uid}: solo el propietario puede leer/escribir
+  - bets/{id}: usuarios solo pueden crear/leer sus propias apuestas
+  - Las actualizaciones de estado solo las hacen las Functions
+
+✅ Estructura de datos:
+  - wallets/{uid}: { balance:number, updatedAt }
+  - bets/{id}: { uid, matchId, type:'winner', pick:'home'|'away', stake:number, odds:number, status:'open'|'won'|'lost'|'void', settledAt? }
+
+Para desplegar las functions:
+cd functions && npm i && npm run build && firebase deploy --only functions

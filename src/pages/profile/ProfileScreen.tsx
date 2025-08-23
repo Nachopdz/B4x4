@@ -1,89 +1,73 @@
-// B4X4 v3.4 START
-import React from 'react';
-import { View, Text, Pressable, Image } from 'react-native';
-import { useThemeB4 } from '@/ds/theme';
-import { useNavigation } from '@react-navigation/native';
-// B4X4 v4.6 START
-import Button from '@/ds/components/Button';
+import React, { useEffect, useState } from 'react';
+import { View, TouchableOpacity } from 'react-native'; 
+import Text from '@/ds/components/Text';
+import { useThemeB4 } from '@/ds/theme'; 
 import { useAuthStore } from '@/store/useAuthStore';
-// B4X4 v4.6 END
-// B4X4 v4.7 START
-import { useSkins } from '@/pages/vault/useVault';
-// B4X4 v4.7 END
-// B4X4 v5.5 START
-import PlayerCard from '@/components/profile/PlayerCard';
-import { mapPlayerCard } from '@/utils/mappers';
-import { PlayerCardDTO } from '@/types/dto';
-// B4X4 v5.7 START
-import { useCardCustomization } from './useCardCustomization';
-// B4X4 v5.7 END
+import { getUser } from '@/features/users/userService';
+import { useRole } from '@/features/auth/useRole';
+import { can } from '@/features/auth/roles';
 
-export default function ProfileScreen() {
+export default function ProfileScreen(){
+  const uid = useAuthStore().session?.uid!; 
+  const [me,setMe]=useState<any>(null);
   const theme = useThemeB4();
-  const nav = useNavigation<any>();
-  // B4X4 v4.6 START
-  const setSessionFull = useAuthStore((s) => s.setSessionFull);
-  // B4X4 v4.6 END
-  // B4X4 v4.7 START
-  const me = useAuthStore((s) => s.session?.user?.id ?? s.session?.userId ?? 'u1');
-  const { inv } = useSkins(me);
-  const equipped = inv.data?.equippedSkin;
-  // B4X4 v4.7 END
-  // B4X4 v4.8 START
-  const roles = useAuthStore((s) => s.session?.user?.globalRoles ?? []);
-  // B4X4 v4.8 END
-
-  // B4X4 v5.5 START
-  const mockCard: PlayerCardDTO = {
-    id: me,
-    username: 'Agente '+(me?.slice(0,4) ?? 'B4X4'),
-    avatarUrl: undefined,
-    city: 'Cádiz',
-    team: 'Bulls Cádiz',
-    role: 'player',
-    stats: { rating: 86, attack: 88, defense: 80, stamina: 84, skill: 87 },
-    badges: ['🏆 MVP Local', '🔥 20 Partidos'],
-  };
-  const playerCard = mapPlayerCard(mockCard);
-  // B4X4 v5.7 START
-  const { inventory } = useCardCustomization();
-  const equippedSkin = (inventory.data as any)?.equippedSkin ?? equipped ?? 'default';
-  const playerCardWithSkin = { ...(playerCard as any), skinId: equippedSkin };
-  // B4X4 v5.7 END
-
+  const role = useRole();
+  
+  useEffect(()=>{ 
+    (async()=>setMe(await getUser(uid)))(); 
+  },[uid]);
+  
+  if(!me) return null;
+  
   return (
-    <View style={{ flex:1, backgroundColor:'#000', padding:16 }}>
-      {/* B4X4 v5.5 START: Carta FIFA */}
-      {/* B4X4 v5.7 START: pasar skinId */}
-      <PlayerCard card={playerCardWithSkin as any} onCustomize={() => nav.navigate('CardEditor')} skinId={equippedSkin as any} />
-      {/* B4X4 v5.7 END */}
-      {/* B4X4 v4.7 START */}
-      {equipped ? (
-        <View style={{ alignItems: 'center', marginBottom: 12 }}>
-          <Image source={{ uri: 'https://picsum.photos/seed/' + equipped + '/240/240' }} style={{ width: 120, height: 120, borderRadius: 60, backgroundColor: '#111' }} />
-          <Text style={{ color: theme.text, marginTop: 6 }}>Skin: {equipped}</Text>
-        </View>
-      ) : null}
-      {/* B4X4 v4.7 END */}
-      <Text style={{ color: theme.text, fontSize: 22, marginBottom: 12 }}>Perfil</Text>
-      <Pressable
-        onPress={() => nav.navigate('EditProfile')}
-        style={{ backgroundColor: theme.accent, padding: 12, borderRadius: 12, alignSelf: 'flex-start' }}
-      >
-        <Text style={{ color: '#000', fontWeight: '600' }}>Editar perfil</Text>
-      </Pressable>
-      {/* B4X4 v4.6 START */}
-      <View style={{ marginTop: 16, gap: 8 }}>
-        <Button title="Cerrar sesión" variant="outline" onPress={() => setSessionFull(null)} />
-        {/* B4X4 v4.8 START */}
-        <Button title="Seguridad y control parental" variant="outline" onPress={() => nav.navigate('SettingsSafety')} />
-        {roles?.some((r) => ['owner', 'admin', 'moderator'].includes(r as any)) && (
-          <Button title="Moderación (cola)" variant="outline" onPress={() => nav.navigate('ModerationQueue')} />
-        )}
-        {/* B4X4 v4.8 END */}
-      </View>
-      {/* B4X4 v4.6 END */}
+    <View style={{flex:1,backgroundColor:theme.background, padding:24}}>
+      <Text style={{fontSize:22}}>{me.displayName ?? 'Sin nombre'}</Text>
+      <Text style={{color:theme.muted, marginTop:6}}>@{me.handle}</Text>
+      <Text style={{marginTop:12}}>Ciudad: {me.city ?? '—'}</Text>
+      <Text style={{marginTop:4}}>Rol: {me.role ?? 'player'}</Text>
+      
+      {/* Botones condicionales basados en rol */}
+      {can.createLeague(role) && (
+        <TouchableOpacity 
+          style={{
+            marginTop: 20, 
+            backgroundColor: theme.accent, 
+            padding: 14, 
+            borderRadius: 12, 
+            alignItems: 'center'
+          }}
+        >
+          <Text style={{color: '#000', fontWeight: '800'}}>Crear Liga</Text>
+        </TouchableOpacity>
+      )}
+      
+      {can.createChallenge(role) && (
+        <TouchableOpacity 
+          style={{
+            marginTop: 12, 
+            backgroundColor: theme.accent, 
+            padding: 14, 
+            borderRadius: 12, 
+            alignItems: 'center'
+          }}
+        >
+          <Text style={{color: '#000', fontWeight: '800'}}>Crear Desafío</Text>
+        </TouchableOpacity>
+      )}
+      
+      {can.moderate(role) && (
+        <TouchableOpacity 
+          style={{
+            marginTop: 12, 
+            backgroundColor: theme.danger, 
+            padding: 14, 
+            borderRadius: 12, 
+            alignItems: 'center'
+          }}
+        >
+          <Text style={{color: '#fff', fontWeight: '800'}}>Panel de Moderación</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
-// B4X4 v3.4 END

@@ -16,8 +16,8 @@ export default function AuthStack() {
       screenOptions={{ headerStyle: { backgroundColor: '#000' }, headerTintColor: '#fff', headerShadowVisible: false }}
     >
       <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ title: '' }} />
-      <Stack.Screen name="Phone" component={PhoneScreen} options={{ title: 'Tu teléfono' }} />
-      <Stack.Screen name="Code" component={CodeScreen} options={{ title: 'Verificar código' }} />
+      <Stack.Screen name="PhoneScreen" component={PhoneScreen} options={{ title: 'Tu teléfono' }} />
+      <Stack.Screen name="CodeScreen" component={CodeScreen} options={{ title: 'Verificar código' }} />
       <Stack.Screen name="AgeGate" component={AgeGateScreen} options={{ title: 'Tu edad' }} />
       <Stack.Screen name="Consent" component={ConsentScreen} options={{ title: 'Consentimiento' }} />
       <Stack.Screen name="ProfileSetup" component={ProfileSetupScreen} options={{ title: 'Tu perfil' }} />

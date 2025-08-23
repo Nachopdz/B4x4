@@ -1,0 +1,33 @@
+PROMPT 13 COMPLETADO
+
+Sistema de Notificaciones Push implementado con:
+
+✅ Frontend (Expo Notifications):
+  - src/features/notify/push.ts: registro de token y permisos
+  - Integración en ProfileSetupScreen para registrar token tras login
+  - Manejo de permisos de notificaciones
+
+✅ Firebase Functions:
+  - functions/src/push.ts: funciones para enviar notificaciones
+  - functions/src/index.ts: hook integrado en liquidación de apuestas
+  - functions/package.json: dependencias y scripts
+  - functions/tsconfig.json: configuración TypeScript
+
+✅ Funcionalidades implementadas:
+  - Registro automático de token Expo al crear perfil
+  - Notificación automática cuando se liquida una apuesta
+  - Integración con el sistema de liquidación existente
+  - Envío de push notifications a través de Expo
+
+✅ Flujo de notificaciones:
+  1. Usuario se registra y crea perfil
+  2. Se solicita permiso de notificaciones
+  3. Token se guarda en users/{uid}.expoPushToken
+  4. Al liquidar apuestas se envían notificaciones automáticamente
+
+✅ Dependencias instaladas:
+  - expo-notifications (frontend)
+  - firebase-admin, firebase-functions, node-fetch (backend)
+
+Para desplegar las functions:
+cd functions && npm i && npm run build && firebase deploy --only functions

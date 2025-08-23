@@ -1,0 +1,44 @@
+PROMPT 16 COMPLETADO
+
+Sistema de Índices, QA Pack y Build Interna implementado con:
+
+✅ Índices de Firestore (firestore.indexes.json):
+  - reels: createdAt DESC para feed cronológico
+  - posts: createdAt DESC para feed cronológico  
+  - matches: leagueId ASC para consultas por liga
+  - bets: matchId + status para liquidación
+  - challenges: status + createdAt para listado
+  - analytics: ts DESC para eventos recientes
+
+✅ QA Smoke Test Checklist (QA_SMOKE.md):
+  - Checklist completo de funcionalidades críticas
+  - Cobertura de todos los módulos principales
+  - Usuarios de prueba y datos de testing
+  - Criterios de aceptación claros
+  - Notas para diferentes entornos
+
+✅ Scripts de Build (package.json):
+  - build:apk: Genera APK para distribución interna
+  - build:aab: Genera App Bundle para Play Store
+  - build:ios: Genera build para iOS
+
+✅ Configuración EAS Build (eas.json):
+  - Build de desarrollo con cliente de desarrollo
+  - Build de preview con APK para testing interno
+  - Build de producción con App Bundle
+
+✅ Funcionalidades cubiertas en QA:
+  - Autenticación OTP completa
+  - Gestión de perfiles y roles
+  - Feed y contenido multimedia
+  - Sistema de retos y validaciones
+  - Ligas, partidos y RSVP
+  - Wallet, apuestas y liquidación
+  - Moderación y reportes
+  - Navegación y performance
+
+Para generar build interna:
+npm run build:apk
+
+Para build con EAS:
+npx eas build --platform android --profile preview

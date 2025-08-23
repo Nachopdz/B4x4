@@ -1,0 +1,37 @@
+PROMPT 14 COMPLETADO
+
+Sistema de Moderación y Administración implementado con:
+
+✅ Sistema de Reportes:
+  - src/pages/reports/ReportsScreen.tsx: interfaz para usuarios reportar contenido
+  - Estructura de datos: reports/{id} con reporterUid, target, reason, status
+  - Tipos de contenido reportable: post, reel, challenge, profile
+
+✅ Función Callable de Administración:
+  - functions/src/admin.ts: setUserRole para cambiar roles de usuarios
+  - Solo usuarios con rol 'admin' pueden cambiar roles
+  - Validación de permisos en el backend
+
+✅ Pantalla de Administración:
+  - src/pages/admin/AdminScreen.tsx: interfaz para admins asignar roles
+  - Campo para targetUid y selección de rol
+  - Llamada a función callable setUserRole
+
+✅ Reglas de Firestore actualizadas:
+  - reports/{id}: usuarios pueden crear reportes, mods/admins pueden leer/actualizar
+  - Seguridad basada en roles para acceso a reportes
+  - Solo el reporter puede ver sus propios reportes
+
+✅ Funcionalidades implementadas:
+  - Creación de reportes por usuarios
+  - Sistema de roles y permisos
+  - Interfaz de administración para mods/admins
+  - Validación de permisos en frontend y backend
+
+✅ Estructura de datos:
+  - reports/{id}: { reporterUid, target:{type, id}, reason, createdAt, status }
+  - Estados: 'open', 'reviewed', 'actioned'
+  - Roles disponibles: player, creator, viewer, organizer, mod, admin
+
+Para desplegar las functions:
+cd functions && npm i && npm run build && firebase deploy --only functions

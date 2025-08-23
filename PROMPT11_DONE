@@ -1,0 +1,20 @@
+PROMPT 11 COMPLETADO
+
+Sistema de Ligas y Partidos implementado con:
+
+✅ Repositorio de ligas (leaguesRepo.ts)
+✅ Pantalla principal de ligas (LeaguesHomeScreen.tsx)
+✅ Pantalla de creación de ligas (CreateLeagueScreen.tsx)
+✅ Pantalla de detalle de liga (LeagueDetailScreen.tsx)
+✅ Pantalla de creación de partidos (CreateMatchScreen.tsx)
+✅ Pantalla de detalle de partido con RSVP (MatchDetailScreen.tsx)
+✅ Reglas de Firestore actualizadas
+✅ LeaguesStack configurado con todas las pantallas
+
+Funcionalidades implementadas:
+- CRUD completo para ligas y partidos
+- Sistema de RSVP para unirse/salir de partidos
+- UI moderna y responsive
+- Navegación completa entre pantallas
+- Integración con Firebase/Firestore
+- Control de acceso basado en roles

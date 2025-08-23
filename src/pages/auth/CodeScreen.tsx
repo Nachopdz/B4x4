@@ -1,36 +1,32 @@
-// B4X4 v4.6 START
 import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
-import Input from '@/ds/components/Input';
-import Button from '@/ds/components/Button';
-import { AuthService } from '@/services/AuthService';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { useAuthStore } from '@/store/useAuthStore';
+import { View, TextInput, TouchableOpacity } from 'react-native';
+import Text from '@/ds/components/Text'; 
+import { useThemeB4 } from '@/ds/theme';
 
-export default function CodeScreen() {
-  const route = useRoute<any>();
-  const phone = route.params?.phone;
-  const nav = useNavigation<any>();
-  const [code, setCode] = useState('');
+export default function CodeScreen({ route, navigation }: any){
+  const { handle } = route.params;
+  const [code, setCode] = useState(''); 
   const [loading, setLoading] = useState(false);
-  const setSessionFull = useAuthStore((s) => s.setSessionFull);
-  const onVerify = async () => {
+  const theme = useThemeB4();
+
+  async function onConfirm(){
     setLoading(true);
-    try {
-      const { session } = await AuthService.verifyCode(phone, code);
-      await setSessionFull(session);
-      nav.replace('AgeGate');
-    } catch (e: any) {
-      Alert.alert('Error', e.message || 'Código incorrecto');
-    } finally {
-      setLoading(false);
-    }
-  };
+    try{
+      await handle.verify(code);
+      navigation.replace('ProfileSetupScreen');
+    } finally { setLoading(false); }
+  }
+
   return (
-    <View style={{ flex: 1, backgroundColor: '#000', padding: 16, gap: 12 }}>
-      <Input label="Código" value={code} onChangeText={setCode} keyboardType="number-pad" />
-      <Button title="Verificar" onPress={onVerify} loading={loading} />
+    <View style={{flex:1, backgroundColor:theme.background, padding:24, justifyContent:'center'}}>
+      <Text style={{fontSize:22, marginBottom:12}}>Código SMS</Text>
+      <TextInput value={code} onChangeText={setCode} keyboardType="number-pad" maxLength={6}
+        placeholder="123456" placeholderTextColor={theme.muted}
+        style={{borderWidth:1,borderColor:'#333',borderRadius:12,padding:12,color:'#fff',letterSpacing:4}} />
+      <TouchableOpacity onPress={onConfirm} disabled={loading || code.length<6}
+        style={{marginTop:16, backgroundColor:theme.accent, padding:14, borderRadius:12, alignItems:'center'}}>
+        <Text style={{color:'#000', fontWeight:'800'}}>{loading?'Verificando...':'Confirmar'}</Text>
+      </TouchableOpacity>
     </View>
   );
 }
-// B4X4 v4.6 END

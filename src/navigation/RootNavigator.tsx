@@ -1,13 +1,11 @@
-// B4X4 v3.4 START
-import React, { useEffect } from 'react';
+import React from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 import ProfileStack from '@/navigation/stacks/ProfileStack';
-// B4X4 v4.6 START
 import AuthStack from '@/navigation/stacks/AuthStack';
 import { useAuthStore } from '@/store/useAuthStore';
-// B4X4 v4.6 END
 
 const Root = createNativeStackNavigator();
 
@@ -39,30 +37,28 @@ const linking = {
 };
 
 export default function RootNavigator() {
-  useEffect(() => {
-    console.log('[Linking] configured', linking);
-  }, []);
-  // B4X4 v4.6 START
-  const session = useAuthStore((s) => s.session);
-  // B4X4 v4.6 END
-
+  const { ready, session } = useAuthStore();
+  
+  if(!ready){ 
+    return (
+      <View style={{flex:1, backgroundColor:'#000', alignItems:'center', justifyContent:'center'}}>
+        <ActivityIndicator size="large" color="#39FF14" />
+      </View>
+    ); 
+  }
+  
   return (
     <NavigationContainer theme={navTheme} linking={linking}>
       <Root.Navigator screenOptions={{ headerShown: false }}>
-        {
-          // B4X4 v4.6 START
-          session ? (
-            <>
-              <Root.Screen name="Main" component={BottomTabs} />
-              <Root.Screen name="ProfileStack" component={ProfileStack} />
-            </>
-          ) : (
-            <Root.Screen name="Auth" component={AuthStack} />
-          )
-          // B4X4 v4.6 END
-        }
+        {session ? (
+          <>
+            <Root.Screen name="Main" component={BottomTabs} />
+            <Root.Screen name="ProfileStack" component={ProfileStack} />
+          </>
+        ) : (
+          <Root.Screen name="Auth" component={AuthStack} />
+        )}
       </Root.Navigator>
     </NavigationContainer>
   );
 }
-// B4X4 v3.4 END

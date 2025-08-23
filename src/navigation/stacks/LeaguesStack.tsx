@@ -1,9 +1,11 @@
 // B4X4 v6.1 START
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import FantasyHomeScreen from '@/pages/fantasy/FantasyHomeScreen';
-import MyRosterScreen from '@/pages/fantasy/MyRosterScreen';
-import WeeklyMatchupScreen from '@/pages/fantasy/WeeklyMatchupScreen';
+import LeaguesHomeScreen from '@/pages/leagues/LeaguesHomeScreen';
+import CreateLeagueScreen from '@/pages/leagues/CreateLeagueScreen';
+import LeagueDetailScreen from '@/pages/leagues/LeagueDetailScreen';
+import CreateMatchScreen from '@/pages/leagues/CreateMatchScreen';
+import MatchDetailScreen from '@/pages/leagues/MatchDetailScreen';
 import { useThemeB4 } from '@/ds/theme';
 
 const Stack = createNativeStackNavigator();
@@ -18,9 +20,11 @@ export default function LeaguesStack() {
         headerShadowVisible: false,
       }}
     >
-      <Stack.Screen name="FantasyHome" component={FantasyHomeScreen} options={{ title: 'Fantasy' }} />
-      <Stack.Screen name="MyRoster" component={MyRosterScreen} options={{ title: 'Mi Roster' }} />
-      <Stack.Screen name="WeeklyMatchup" component={WeeklyMatchupScreen} options={{ title: 'Matchup' }} />
+      <Stack.Screen name="LeaguesHome" component={LeaguesHomeScreen} options={{ title: 'Ligas' }} />
+      <Stack.Screen name="CreateLeague" component={CreateLeagueScreen} options={{ title: 'Crear Liga' }} />
+      <Stack.Screen name="LeagueDetail" component={LeagueDetailScreen} options={{ title: 'Detalle Liga' }} />
+      <Stack.Screen name="CreateMatch" component={CreateMatchScreen} options={{ title: 'Crear Partido' }} />
+      <Stack.Screen name="MatchDetail" component={MatchDetailScreen} options={{ title: 'Detalle Partido' }} />
     </Stack.Navigator>
   );
 }

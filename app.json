@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "a0-project",
-    "slug": "snack-ed032eb6-9eee-484b-9998-7fe26e59f00a",
+    "name": "B4X4",
+    "slug": "b4x4",
+    "scheme": "b4x4",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,6 +25,16 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": "Quickly generate React Native components with AI"
+    "description": "B4X4 - Basketball 4x4 App",
+    "extra": {
+      "firebase": {
+        "apiKey": "process.env.EXPO_PUBLIC_FIREBASE_API_KEY",
+        "authDomain": "process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN",
+        "projectId": "process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID",
+        "storageBucket": "process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET",
+        "messagingSenderId": "process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
+        "appId": "process.env.EXPO_PUBLIC_FIREBASE_APP_ID"
+      }
+    }
   }
 }

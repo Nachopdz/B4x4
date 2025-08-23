@@ -6,9 +6,14 @@
     "strict": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
-    "paths": { "@/*": ["src/*"] },
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "//end": "B4X4 v3.2 END"
+  "//end": "B4X4 v3.2 END",
+  "extends": "expo/tsconfig.base"
 }
